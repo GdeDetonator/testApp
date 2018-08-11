@@ -29,7 +29,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_photo_fullscreen"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".CommentsActivity"
+        <activity android:name=".activities.CommentsActivity"
             android:parentActivityName=".activities.MainActivity">
 
         </activity>

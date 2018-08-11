@@ -1,4 +1,4 @@
-package kg.skureganov.testapp;
+package kg.skureganov.testapp.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.adapters.CommentListAdapter;
 import kg.skureganov.testapp.retrofit.Comment;
 import kg.skureganov.testapp.retrofit.CommentsApi;
