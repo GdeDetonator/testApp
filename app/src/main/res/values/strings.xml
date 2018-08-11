@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">testApp</string>
+    <string name="title_albums">Albums</string>
+    <string name="title_posts">Posts</string>
+    <string name="internet_problems">Internet problems</string>
+
+    <string name="title_activity_photo_fullscreen">PhotoFullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    
+    <string name="comment_name_label">Name: </string>
+    <string name="comment_email_label">E-mail: </string>
+    <string name="comment_body_label">Body: </string>
+    <string name="comments_activity_title">Comments</string>
+
+
+</resources>
