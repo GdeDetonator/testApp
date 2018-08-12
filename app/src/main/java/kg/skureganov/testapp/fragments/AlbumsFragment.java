@@ -12,18 +12,31 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.RenderProcessGoneDetail;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import kg.skureganov.testapp.activities.AlbumPhotosActivity;
 import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.adapters.AlbumsListAdapter;
 import kg.skureganov.testapp.retrofit.Album;
+import kg.skureganov.testapp.retrofit.Photo;
+import kg.skureganov.testapp.retrofit.PhotosApi;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class AlbumsFragment extends Fragment {
@@ -33,11 +46,11 @@ public class AlbumsFragment extends Fragment {
 
     private ArrayList<Album> albumList;
 
-//    private String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
+    private String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
 
     private RecyclerView recyclerView;
     private AlbumsListAdapter adapter;
-
+    private View albumFragmentLayout;
 
     public AlbumsFragment() {
         // Required empty public constructor
@@ -45,9 +58,7 @@ public class AlbumsFragment extends Fragment {
 
     public static AlbumsFragment newInstance(ArrayList<Album> albumList) {
         AlbumsFragment fragment = new AlbumsFragment();
-        Bundle args = new Bundle();
         fragment.setAlbumList(albumList);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -66,9 +77,11 @@ public class AlbumsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        albumFragmentLayout = view.findViewById(R.id.albumFragmentLayout);
 
 
         if (albumList != null){
+            setRandomBackgroundImage(albumList);
 
             recyclerView = getActivity().findViewById(R.id.albumRV);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -85,11 +98,50 @@ public class AlbumsFragment extends Fragment {
             });
             recyclerView.setAdapter(adapter);
 
+
+
         }
         else Toast.makeText(getContext(), R.string.internet_problems, Toast.LENGTH_SHORT).show();
 
 
 
+    }
+
+    private void setRandomBackgroundImage(ArrayList<Album> albumList){
+        final Random random = new Random();
+        int randomAlbum = random.nextInt(albumList.size());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(PLACEHOLDER_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PhotosApi photosApi = retrofit.create(PhotosApi.class);
+        final Call<List<Photo>>  photos = photosApi.getPhotos(albumList.get(randomAlbum).getUserId());
+        photos.enqueue(new retrofit2.Callback<List<Photo>>() {
+            @Override
+            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
+                ArrayList<Photo> photosList =(ArrayList<Photo>) response.body();
+                int randomPhoto = random.nextInt(photosList.size());
+                final ImageView backgroundImage = new ImageView(getContext());
+                Picasso.get().load(photosList.get(randomPhoto)
+                        .getUrl()).into(backgroundImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        albumFragmentLayout.setBackground(backgroundImage.getDrawable());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Photo>> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setAlbumList(ArrayList<Album> albumList){

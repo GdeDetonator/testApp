@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -38,8 +39,6 @@ public class PostsFragment extends Fragment {
 
     public static PostsFragment newInstance(ArrayList<Post> postList) {
         PostsFragment fragment = new PostsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         fragment.setPostList(postList);
         return fragment;
     }
@@ -59,19 +58,25 @@ public class PostsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = view.findViewById(R.id.postRV);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayout.VERTICAL));
-        adapter = new PostsListAdapter(postList, new PostsListAdapter.OnPostItemClickListener() {
-            @Override
-            public void onPostItemClick(Post post) {
-                Intent intent = new Intent(getContext(), CommentsActivity.class);
-                intent.putExtra(POST_ID, post.getId());
-                startActivity(intent);
-            }
-        });
-        recyclerView.setAdapter(adapter);
+
+
+        if (postList != null){
+            recyclerView = view.findViewById(R.id.postRV);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayout.VERTICAL));
+            adapter = new PostsListAdapter(postList, new PostsListAdapter.OnPostItemClickListener() {
+                @Override
+                public void onPostItemClick(Post post) {
+                    Intent intent = new Intent(getContext(), CommentsActivity.class);
+                    intent.putExtra(POST_ID, post.getId());
+                    startActivity(intent);
+                }
+            });
+            recyclerView.setAdapter(adapter);
+
+        }
+        else Toast.makeText(getContext(), R.string.internet_problems, Toast.LENGTH_SHORT).show();
     }
 
 
