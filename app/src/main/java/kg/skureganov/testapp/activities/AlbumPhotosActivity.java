@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 
@@ -25,9 +26,9 @@ public class AlbumPhotosActivity extends AppCompatActivity {
     private static final String ALBUM_TITLE = "album_title";
     private static final String BIG_PICTURE_URL = "big_picture_url";
 
+    private String albumTitle;
     private List<Photo> photoList;
     private Integer albumId;
-    private String albumTitle;
     private RecyclerView recyclerView;
     private PhotosListAdapter adapter;
 
@@ -39,7 +40,6 @@ public class AlbumPhotosActivity extends AppCompatActivity {
         albumId = intent.getIntExtra(ALBUM_ID, 0);
         albumTitle = intent.getStringExtra(ALBUM_TITLE);
         setTitle(albumTitle);
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(PLACEHOLDER_URL)
@@ -54,8 +54,8 @@ public class AlbumPhotosActivity extends AppCompatActivity {
 
                 recyclerView = findViewById(R.id.photosList);
                 recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-                adapter = new PhotosListAdapter(getApplicationContext(), photoList, new PhotosListAdapter.onItemClickListener() {
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                adapter = new PhotosListAdapter(photoList, new PhotosListAdapter.onItemClickListener() {
                     @Override
                     public void onItemClick(String url) {
                         Intent intent1 = new Intent(AlbumPhotosActivity.this, PhotoFullscreenActivity.class);

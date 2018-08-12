@@ -28,8 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private List<Album> albumList;
-    private ArrayList<Integer> albumIds;
-    private ArrayList<String> albumTitles;
+    private ArrayList<Album> randomAlbumList;
     private List<Post> postList;
     private ArrayList<Post> randomPostList;
 
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_albums:
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.mainContainer, AlbumsFragment.newInstance(albumTitles, albumIds))
+                            .replace(R.id.mainContainer, AlbumsFragment.newInstance(randomAlbumList))
                             .commit();
                     return true;
                 case R.id.navigation_posts:
@@ -124,21 +123,10 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<Album>> call, Response<List<Album>> response) {
                 albumList = response.body();
 
-                albumTitles = getRandomAlbumList(albumList);
-
-                albumIds = new ArrayList<Integer>();
-
-                for (int i = 0; i < albumTitles.size(); i++) {
-                    for (int j = 0; j < albumList.size(); j++) {
-                        if (albumList.get(j).getTitle() == albumTitles.get(i)) {
-                            albumIds.add(albumList.get(j).getId());
-                        }
-                    }
-                }
-
+                randomAlbumList = getRandomAlbumList(albumList);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.mainContainer, AlbumsFragment.newInstance(albumTitles, albumIds))
+                        .add(R.id.mainContainer, AlbumsFragment.newInstance(randomAlbumList))
                         .commit();
 
 
@@ -152,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private ArrayList<String> getRandomAlbumList(List<Album> albums) {
-        ArrayList<String> albumTitles = new ArrayList<String>();
+    private ArrayList<Album> getRandomAlbumList(List<Album> albums) {
+        ArrayList<Album> randomAlbumList = new ArrayList<>();
         ArrayList<Integer> randomValues = new ArrayList<>();
         Random random = new Random();
         Integer value = random.nextInt(albums.size());
@@ -163,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
                 value = random.nextInt(albums.size());
             }
             randomValues.add(value);
-            albumTitles.add(albums.get(value).getTitle());
+            randomAlbumList.add(albums.get(value));
         }
-        return albumTitles;
+        return randomAlbumList;
     }
 
 

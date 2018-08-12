@@ -6,11 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,34 +22,31 @@ import java.util.ArrayList;
 
 import kg.skureganov.testapp.activities.AlbumPhotosActivity;
 import kg.skureganov.testapp.R;
+import kg.skureganov.testapp.adapters.AlbumsListAdapter;
+import kg.skureganov.testapp.retrofit.Album;
 
 
 public class AlbumsFragment extends Fragment {
 
-    private static final String ALBUM_TITLES = "album_title_list";
-    private static final String ALBUM_IDS = "album_ids";
     private static final String ALBUM_ID = "album_id";
     private static final String ALBUM_TITLE = "album_title";
 
+    private ArrayList<Album> albumList;
 
-    private ArrayList<String> albumTitles;
-    private ArrayList<Integer> albumIds;
-    private Integer albumId;
 //    private String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
 
-    private ListView albumsLV;
-    private ArrayAdapter<String> arrayAdapter;
+    private RecyclerView recyclerView;
+    private AlbumsListAdapter adapter;
 
 
     public AlbumsFragment() {
         // Required empty public constructor
     }
 
-    public static AlbumsFragment newInstance(ArrayList<String> albumTitleList, ArrayList<Integer> albumIds) {
+    public static AlbumsFragment newInstance(ArrayList<Album> albumList) {
         AlbumsFragment fragment = new AlbumsFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ALBUM_TITLES, albumTitleList);
-        args.putIntegerArrayList(ALBUM_IDS, albumIds);
+        fragment.setAlbumList(albumList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,10 +54,6 @@ public class AlbumsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.albumTitles = getArguments().getStringArrayList(ALBUM_TITLES);
-            this.albumIds = getArguments().getIntegerArrayList(ALBUM_IDS);
-        }
     }
 
     @Override
@@ -70,26 +67,32 @@ public class AlbumsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        albumsLV = getActivity().findViewById(R.id.albumLV);
-        if (albumTitles != null){
-            arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_album_list, R.id.albumTitle, albumTitles);
-            albumsLV.setAdapter(arrayAdapter);
-            albumsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        if (albumList != null){
+
+            recyclerView = getActivity().findViewById(R.id.albumRV);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayout.VERTICAL));
+            adapter = new AlbumsListAdapter(albumList, new AlbumsListAdapter.OnAlbumItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    albumId = albumIds.get(position);
-
+                public void onAlbumItemClick(Album album) {
                     Intent intent = new Intent(getContext(), AlbumPhotosActivity.class);
-                    intent.putExtra(ALBUM_TITLE, albumTitles.get(position));
-                    intent.putExtra(ALBUM_ID, albumId);
+                    intent.putExtra(ALBUM_ID, album.getId());
+                    intent.putExtra(ALBUM_TITLE, album.getTitle());
                     startActivity(intent);
-
                 }
             });
+            recyclerView.setAdapter(adapter);
+
         }
         else Toast.makeText(getContext(), R.string.internet_problems, Toast.LENGTH_SHORT).show();
 
 
 
+    }
+
+    private void setAlbumList(ArrayList<Album> albumList){
+        this.albumList = albumList;
     }
 }

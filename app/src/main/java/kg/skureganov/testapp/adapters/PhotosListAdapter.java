@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -19,12 +20,11 @@ import kg.skureganov.testapp.R;
 public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.PhotosListHolder> {
 
     private List<Photo> photoList;
-    Context context;
-    public onItemClickListener onItemClickListener;
 
-    public PhotosListAdapter(Context context, List<Photo> photoList, onItemClickListener onItemClickListener) {
+    onItemClickListener onItemClickListener;
+
+    public PhotosListAdapter (List<Photo> photoList, onItemClickListener onItemClickListener) {
         this.photoList = photoList;
-        this.context = context;
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -37,15 +37,21 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.Ph
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PhotosListHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final PhotosListHolder holder, int position) {
         Picasso.get().load(photoList.get(position).getThumbnailUrl()).into(holder.photosListImage);
-        holder.photosListImage.setOnClickListener(new View.OnClickListener() {
+//        holder.photosListImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onItemClickListener.onItemClick(photoList.get(holder.getAdapterPosition()).getUrl());
+//            }
+//        });
+        holder.photosListTitle.setText(photoList.get(position).getTitle());
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onItemClick(photoList.get(position).getUrl());
+                onItemClickListener.onItemClick(photoList.get(holder.getAdapterPosition()).getUrl());
             }
         });
-        //holder.photosListImage = photoList.get(position).getThumbnailUrl();
     }
 
     @Override
@@ -55,10 +61,14 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.Ph
 
     static class PhotosListHolder extends RecyclerView.ViewHolder{
         ImageView photosListImage;
+        TextView photosListTitle;
+        View layout;
 
-        public PhotosListHolder(View itemView) {
+        PhotosListHolder(View itemView) {
             super(itemView);
             photosListImage = itemView.findViewById(R.id.photosListImage);
+            photosListTitle = itemView.findViewById(R.id.photosListTitle);
+            layout = itemView.findViewById(R.id.photosListLayout);
         }
 
     }

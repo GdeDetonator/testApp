@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AlbumsFragment">
 
-    <ListView
-        android:id="@+id/albumLV"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/albumRV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>
