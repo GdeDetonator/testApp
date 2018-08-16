@@ -24,12 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Album> albumList;
-    private ArrayList<Album> randomAlbumList;
-    private List<Post> postList;
-    private ArrayList<Post> randomPostList;
+    private static List<Album> albumList;
+    private static ArrayList<Album> randomAlbumList;
+    private static List<Post> postList;
+    private static ArrayList<Post> randomPostList;
 
-    private final String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
+    private static final String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -70,25 +70,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getPosts(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PLACEHOLDER_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RetrofitApi postsApi = retrofit.create(RetrofitApi.class);
-        Call<List<Post>> posts = postsApi.getPosts();
-        posts.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                postList = response.body();
-                randomPostList = getRandomPostList(postList);
 
-            }
+        if ((postList == null) && (randomPostList == null)){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(PLACEHOLDER_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RetrofitApi postsApi = retrofit.create(RetrofitApi.class);
+            Call<List<Post>> posts = postsApi.getPosts();
+            posts.enqueue(new Callback<List<Post>>() {
+                @Override
+                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                    postList = response.body();
+                    randomPostList = getRandomPostList(postList);
 
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
+                }
 
-            }
-        });
+                @Override
+                public void onFailure(Call<List<Post>> call, Throwable t) {
+
+                }
+            });
+        }
+
     }
 
     private ArrayList<Post> getRandomPostList(List<Post> posts) {
@@ -109,31 +113,41 @@ public class MainActivity extends AppCompatActivity {
 
     private void getAlbums() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PLACEHOLDER_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RetrofitApi albumsApi = retrofit.create(RetrofitApi.class);
-        Call<List<Album>> albums = albumsApi.getAlbums();
-        albums.enqueue(new Callback<List<Album>>() {
-            @Override
-            public void onResponse(Call<List<Album>> call, Response<List<Album>> response) {
-                albumList = response.body();
+        if ((albumList == null) && (randomAlbumList == null)){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(PLACEHOLDER_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RetrofitApi albumsApi = retrofit.create(RetrofitApi.class);
+            Call<List<Album>> albums = albumsApi.getAlbums();
+            albums.enqueue(new Callback<List<Album>>() {
+                @Override
+                public void onResponse(Call<List<Album>> call, Response<List<Album>> response) {
+                    albumList = response.body();
 
-                randomAlbumList = getRandomAlbumList(albumList);
+                    randomAlbumList = getRandomAlbumList(albumList);
 
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.mainContainer, AlbumsFragment.newInstance(randomAlbumList))
-                        .commit();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.mainContainer, AlbumsFragment.newInstance(randomAlbumList))
+                            .commit();
 
 
-            }
+                }
 
-            @Override
-            public void onFailure(Call<List<Album>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Album>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }
+        else {
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.mainContainer, AlbumsFragment.newInstance(randomAlbumList))
+                    .commit();
+        }
+
+
     }
 
 
