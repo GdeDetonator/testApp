@@ -5,8 +5,7 @@
     android:id="@+id/postsItemLayout"
     android:background="?selectableItemBackground"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:padding="@dimen/default_dimen"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

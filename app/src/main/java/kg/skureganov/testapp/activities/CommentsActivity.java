@@ -7,15 +7,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.adapters.CommentListAdapter;
 import kg.skureganov.testapp.retrofit.Comment;
-import kg.skureganov.testapp.retrofit.CommentsApi;
+import kg.skureganov.testapp.retrofit.RetrofitApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +43,7 @@ public class CommentsActivity extends AppCompatActivity {
                 .baseUrl(PLACEHOLDER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        CommentsApi commentsApi = retrofit.create(CommentsApi.class);
+        RetrofitApi commentsApi = retrofit.create(RetrofitApi.class);
         Call<List<Comment>> comments =  commentsApi.getComments(postId);
         comments.enqueue(new Callback<List<Comment>>() {
             @Override

@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,9 +14,8 @@ import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.fragments.AlbumsFragment;
 import kg.skureganov.testapp.fragments.PostsFragment;
 import kg.skureganov.testapp.retrofit.Album;
-import kg.skureganov.testapp.retrofit.AlbumsApi;
 import kg.skureganov.testapp.retrofit.Post;
-import kg.skureganov.testapp.retrofit.PostsApi;
+import kg.skureganov.testapp.retrofit.RetrofitApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Post> postList;
     private ArrayList<Post> randomPostList;
 
-    private String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
+    private final String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -77,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(PLACEHOLDER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        PostsApi postsApi = retrofit.create(PostsApi.class);
+        RetrofitApi postsApi = retrofit.create(RetrofitApi.class);
         Call<List<Post>> posts = postsApi.getPosts();
         posts.enqueue(new Callback<List<Post>>() {
             @Override
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(PLACEHOLDER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        AlbumsApi albumsApi = retrofit.create(AlbumsApi.class);
+        RetrofitApi albumsApi = retrofit.create(RetrofitApi.class);
         Call<List<Album>> albums = albumsApi.getAlbums();
         albums.enqueue(new Callback<List<Album>>() {
             @Override

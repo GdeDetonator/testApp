@@ -12,12 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.RenderProcessGoneDetail;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
@@ -32,7 +28,7 @@ import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.adapters.AlbumsListAdapter;
 import kg.skureganov.testapp.retrofit.Album;
 import kg.skureganov.testapp.retrofit.Photo;
-import kg.skureganov.testapp.retrofit.PhotosApi;
+import kg.skureganov.testapp.retrofit.RetrofitApi;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -114,7 +110,7 @@ public class AlbumsFragment extends Fragment {
                 .baseUrl(PLACEHOLDER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        PhotosApi photosApi = retrofit.create(PhotosApi.class);
+        RetrofitApi photosApi = retrofit.create(RetrofitApi.class);
         final Call<List<Photo>>  photos = photosApi.getPhotos(albumList.get(randomAlbum).getUserId());
         photos.enqueue(new retrofit2.Callback<List<Photo>>() {
             @Override

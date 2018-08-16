@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/albumItemLayout"
     android:background="?selectableItemBackground"
+    android:padding="@dimen/default_dimen"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,7 +12,6 @@
         android:id="@+id/albumTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp"
         tools:text="Album 1" />

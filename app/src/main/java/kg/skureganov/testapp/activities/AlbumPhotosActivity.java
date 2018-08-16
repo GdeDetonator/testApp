@@ -3,7 +3,6 @@ package kg.skureganov.testapp.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import kg.skureganov.testapp.R;
 import kg.skureganov.testapp.adapters.PhotosListAdapter;
 import kg.skureganov.testapp.retrofit.Photo;
-import kg.skureganov.testapp.retrofit.PhotosApi;
+import kg.skureganov.testapp.retrofit.RetrofitApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +44,7 @@ public class AlbumPhotosActivity extends AppCompatActivity {
                 .baseUrl(PLACEHOLDER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        PhotosApi photosApi = retrofit.create(PhotosApi.class);
+        RetrofitApi photosApi = retrofit.create(RetrofitApi.class);
         Call <List<Photo>> photos = photosApi.getPhotos(albumId);
         photos.enqueue(new Callback<List<Photo>>() {
             @Override
