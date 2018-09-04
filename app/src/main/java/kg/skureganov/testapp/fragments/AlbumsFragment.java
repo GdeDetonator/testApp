@@ -41,6 +41,7 @@ public class AlbumsFragment extends Fragment {
     private static final String ALBUM_TITLE = "album_title";
 
     private ArrayList<Album> albumList;
+    private static ArrayList<Photo> photosList;
 
     private String PLACEHOLDER_URL = "http://jsonplaceholder.typicode.com/";
 
@@ -105,39 +106,58 @@ public class AlbumsFragment extends Fragment {
 
     private void setRandomBackgroundImage(ArrayList<Album> albumList){
         final Random random = new Random();
-        int randomAlbum = random.nextInt(albumList.size());
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PLACEHOLDER_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RetrofitApi photosApi = retrofit.create(RetrofitApi.class);
-        final Call<List<Photo>>  photos = photosApi.getPhotos(albumList.get(randomAlbum).getUserId());
-        photos.enqueue(new retrofit2.Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-                ArrayList<Photo> photosList =(ArrayList<Photo>) response.body();
-                int randomPhoto = random.nextInt(photosList.size());
-                final ImageView backgroundImage = new ImageView(getContext());
-                Picasso.get().load(photosList.get(randomPhoto)
-                        .getUrl()).into(backgroundImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        albumFragmentLayout.setBackground(backgroundImage.getDrawable());
-                    }
+        if (photosList != null){
+            int randomPhoto = random.nextInt(photosList.size());
+            final ImageView backgroundImage = new ImageView(getContext());
+            Picasso.get().load(photosList.get(randomPhoto)
+                    .getUrl()).into(backgroundImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                    albumFragmentLayout.setBackground(backgroundImage.getDrawable());
+                }
 
-                    @Override
-                    public void onError(Exception e) {
+                @Override
+                public void onError(Exception e) {
 
-                    }
-                });
+                }
+            });
+        }
+        else {
+            int randomAlbum = random.nextInt(albumList.size());
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(PLACEHOLDER_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RetrofitApi photosApi = retrofit.create(RetrofitApi.class);
+            final Call<List<Photo>>  photos = photosApi.getPhotos(albumList.get(randomAlbum).getUserId());
+            photos.enqueue(new retrofit2.Callback<List<Photo>>() {
+                @Override
+                public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
+                    photosList =(ArrayList<Photo>) response.body();
+                    int randomPhoto = random.nextInt(photosList.size());
+                    final ImageView backgroundImage = new ImageView(getContext());
+                    Picasso.get().load(photosList.get(randomPhoto)
+                            .getUrl()).into(backgroundImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            albumFragmentLayout.setBackground(backgroundImage.getDrawable());
+                        }
 
-            }
+                        @Override
+                        public void onError(Exception e) {
 
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
+                        }
+                    });
 
-            }
-        });
+                }
+
+                @Override
+                public void onFailure(Call<List<Photo>> call, Throwable t) {
+
+                }
+            });
+        }
+
     }
 
     private void setAlbumList(ArrayList<Album> albumList){
